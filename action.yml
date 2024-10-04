@@ -72,7 +72,8 @@ runs:
         method: POST
         username: ${{ inputs.api-username }}
         password: ${{ inputs.api-key }}
-        files: { 'bin': '${{ inputs.binary-output }}' }
+        contentType: 'multipart/form-data'
+        files: '{ "bin": "${{ inputs.binary-output }}" }'
     - name: Create pages zip
       id: create-pages-zip
       if: ${{ inputs.skip-pages == 'false' }}
@@ -90,4 +91,5 @@ runs:
         method: POST
         username: ${{ inputs.api-username }}
         password: ${{ inputs.api-key }}
-        files: { 'pages': '${{ github.workspace }}/pages.zip' }
+        contentType: 'multipart/form-data'
+        files: '{ "pages": "${{ github.workspace }}/pages.zip" }'
