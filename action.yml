@@ -38,7 +38,7 @@ outputs:
 runs:
   using: composite
   steps:
-    - name: Extract Mod Info
+    - name: Extract mod info
       id: extract-info
       uses: actions/github-script@v7
       with:
@@ -58,7 +58,7 @@ runs:
       id: normalize-api-url
       run: echo "::set-output name=api-url::${{ inputs.api-domain%/ }}/${{ inputs.api-path#/ }}"
       shell: bash
-    - name: Deploy Binary
+    - name: Deploy binary
       id: deploy-binary
       uses: fjogeleit/http-request-action@v1
       with:
@@ -67,12 +67,12 @@ runs:
         username: ${{ inputs.api-username }}
         password: ${{ inputs.api-key }}
         files: { 'bin': '${{ inputs.binary-output }}' }
-    - name: Create Pages Zip
+    - name: Create pages zip
       id: create-pages-zip
       if: ${{ inputs.skip-pages == 'false' }}
       run: zip -r ${{ github.workspace }}/pages.zip ${{ inputs.pages-directory%/ }}/*
       shell: bash
-    - name: Deploy Pages
+    - name: Deploy pages
       id: deploy-pages
       if: ${{ inputs.skip-pages == 'false' }}
       uses: fjogeleit/http-request-action@v1
