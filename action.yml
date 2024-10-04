@@ -47,10 +47,8 @@ runs:
           try {
             const { id, version } = require("${{ github.workspace }}/mod.json");
 
-            return {
-              mod_id: id,
-              mod_version: version
-            };
+            core.setOutput("mod_id", id);
+            core.setOutput("mod_version", version);
           } catch(error) {
             core.error("Error while reading or parsing the JSON");
             core.setFailed(error);
