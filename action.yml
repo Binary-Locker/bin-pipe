@@ -38,9 +38,7 @@ outputs:
 runs:
   using: composite
   steps:
-    - name: Debug
-      run: ls ${{ github.workspace }}
-      shell: bash
+    - uses: actions/checkout@v4
     - name: Extract mod info
       id: extract-info
       uses: actions/github-script@v7
