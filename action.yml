@@ -15,7 +15,7 @@ inputs:
     description: The API key for the Binary Locker API
     required: true
   api-path:
-    description: The path for the Binary Locker API without the internal path to the endpoint (e.g. /v1)
+    description: The path for the Binary Locker API without the internal path to the endpoint (e.g. v1)
     required: false
     default: ''
   pages-directory:
@@ -56,7 +56,13 @@ runs:
           }
     - name: Normalize API URL
       id: normalize-api-url
-      run: echo "::set-output name=api-url::${{ inputs.api-domain%/ }}/${{ inputs.api-path%/ }}"
+      run: |
+        api_domain="${{ inputs.api-domain }}"
+        api_domain="${ api_domain%/ }"
+        api_path="${{ inputs.api-path }}"
+        api_path="${ api_path#/ }"
+        api_path="${ api_path%/ }"
+        echo "::set-output name=api-url::${ api_domain }/${ api_path }"
       shell: bash
     - name: Deploy binary
       id: deploy-binary
@@ -70,7 +76,10 @@ runs:
     - name: Create pages zip
       id: create-pages-zip
       if: ${{ inputs.skip-pages == 'false' }}
-      run: zip -r ${{ github.workspace }}/pages.zip ${{ inputs.pages-directory%/ }}/*
+      run: |
+        pages_directory = "${{ inputs.pages-directory }}"
+        pages_directory="${ pages_directory%/ }"
+        zip -r ${{ github.workspace }}/pages.zip ${ pages_directory }/*
       shell: bash
     - name: Deploy pages
       id: deploy-pages
