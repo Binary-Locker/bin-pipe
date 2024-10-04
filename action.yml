@@ -44,7 +44,7 @@ runs:
       with:
         script: |
           try {
-            const { id, version } = require("./mod.json");
+            const { id, version } = require("${{ github.workspace }}/mod.json");
 
             return {
               mod_id: id,
