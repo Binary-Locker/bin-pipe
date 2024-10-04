@@ -63,7 +63,7 @@ runs:
         api_path="${{ inputs.api-path }}"
         api_path="${api_path#/}"
         api_path="${api_path%/}"
-        echo "::set-output name=api-url::${api_domain}/${api_path}"
+        echo "api-url=${api_domain}/${api_path}" >> $GITHUB_OUTPUT
       shell: bash
     - name: Deploy binary
       id: deploy-binary
