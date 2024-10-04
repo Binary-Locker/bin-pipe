@@ -59,11 +59,11 @@ runs:
       id: normalize-api-url
       run: |
         api_domain="${{ inputs.api-domain }}"
-        api_domain="${ api_domain%/ }"
+        api_domain="${api_domain%/}"
         api_path="${{ inputs.api-path }}"
-        api_path="${ api_path#/ }"
-        api_path="${ api_path%/ }"
-        echo "::set-output name=api-url::${ api_domain }/${ api_path }"
+        api_path="${api_path#/}"
+        api_path="${api_path%/}"
+        echo "::set-output name=api-url::${api_domain}/${api_path}"
       shell: bash
     - name: Deploy binary
       id: deploy-binary
@@ -80,8 +80,8 @@ runs:
       if: ${{ inputs.skip-pages == 'false' }}
       run: |
         pages_directory = "${{ inputs.pages-directory }}"
-        pages_directory="${ pages_directory%/ }"
-        zip -r ${{ github.workspace }}/pages.zip ${ pages_directory }/*
+        pages_directory="${pages_directory%/}"
+        zip -r ${{ github.workspace }}/pages.zip ${pages_directory}/*
       shell: bash
     - name: Deploy pages
       id: deploy-pages
