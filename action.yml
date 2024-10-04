@@ -63,7 +63,11 @@ runs:
         api_path="${{ inputs.api-path }}"
         api_path="${api_path#/}"
         api_path="${api_path%/}"
-        echo "api-url=${api_domain}/${api_path}" >> $GITHUB_OUTPUT
+        if [ -z "$api_path" ]; then
+          echo "api-url=${api_domain}" >> $GITHUB_OUTPUT
+        else
+          echo "api-url=${api_domain}/${api_path}" >> $GITHUB_OUTPUT
+        fi
       shell: bash
     - name: Deploy binary
       id: deploy-binary
