@@ -56,7 +56,7 @@ runs:
           }
     - name: Normalize API URL
       id: normalize-api-url
-      run: echo "::set-output name=api-url::${{ inputs.api-domain%/ }}/${{ inputs.api-path#/ }}"
+      run: echo "::set-output name=api-url::${{ inputs.api-domain%/ }}/${{ inputs.api-path%/ }}"
       shell: bash
     - name: Deploy binary
       id: deploy-binary
