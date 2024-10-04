@@ -44,7 +44,7 @@ runs:
       with:
         script: |
           try {
-            const { id, version } = require("${{ github.workspace }}/mod.json");
+            const { id, version } = JSON.parse(require("fs").readFileSync("${{ github.workspace }}/mod.json", "utf8"));
 
             return {
               mod_id: id,
