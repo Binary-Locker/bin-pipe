@@ -41,13 +41,13 @@ runs:
     - uses: actions/checkout@v4
     - name: Get mod info
       id: get-mod-info
-      run: cat "${{ github.workspace }}/mod.json" >> $GITHUB_OUTPUT
+      run: echo content=$(cat "${{ github.workspace }}/mod.json") >> $GITHUB_OUTPUT
       shell: bash
     - name: Extract mod info
       id: extract-info
       uses: SMJS-Productions/json-extract@main
       with:
-        json: ${{ steps.get-mod-info.outputs.stdout }}
+        json: ${{ steps.get-mod-info.outputs.content }}
         paths: '["id", "version"]'
     - name: Normalize API URL
       id: normalize-api-url
