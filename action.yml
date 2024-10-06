@@ -69,7 +69,7 @@ runs:
       shell: bash
     - name: Deploy binary
       id: deploy-binary
-      uses: fjogeleit/http-request-action@main
+      uses: fjogeleit/http-request-action@v1.16.2
       with:
         url: ${{ steps.normalize-api-url.outputs.api-url }}/api/bin/deploy/${{ steps.extract-info.outputs.mod_id }}/${{ steps.extract-info.outputs.mod_version }}
         method: POST
@@ -89,7 +89,7 @@ runs:
     - name: Deploy pages
       id: deploy-pages
       if: ${{ inputs.skip-pages == 'false' }}
-      uses: fjogeleit/http-request-action@main
+      uses: fjogeleit/http-request-action@v1.16.2
       with:
         url: ${{ steps.normalize-api-url.outputs.api-url }}/api/pages/deploy/${{ steps.extract-info.outputs.mod_id }}/${{ steps.extract-info.outputs.mod_version }}
         method: POST
