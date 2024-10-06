@@ -77,13 +77,13 @@ runs:
         password: ${{ inputs.api-key }}
         contentType: multipart/form-data
         files: '{ "bin": "${{ inputs.binary-output }}/${{ steps.extract-info.outputs.mod_id }}.geode" }'
+        ignoreStatusCodes: '409'
     - name: Create pages zip
       id: create-pages-zip
       if: ${{ inputs.skip-pages == 'false' }}
       run: |
-        pages_directory="${{ inputs.pages-directory }}"
-        pages_directory="${pages_directory%/}"
-        zip -r ${{ github.workspace }}/pages.zip ${pages_directory}/*
+        cd ${{ inputs.pages-directory }}
+        zip -r ${{ github.workspace }}/pages.zip *
       shell: bash
     - name: Deploy pages
       id: deploy-pages
