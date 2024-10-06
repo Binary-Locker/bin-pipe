@@ -30,10 +30,10 @@ inputs:
 outputs:
   binary-url:
     description: The response of the binary deployment
-    value: ${{ steps.deploy-binary.response }}
+    value: ${{ steps.extract-binary-url.outputs.url }}
   pages-url:
     description: The response of the page deployment
-    value: ${{ steps.deploy-pages.response }}
+    value: ${{ steps.extract-pages-url.outputs.url }}
 
 runs:
   using: composite
@@ -58,9 +58,9 @@ runs:
         api_path="${api_path#/}"
         api_path="${api_path%/}"
         if [ -z "$api_path" ]; then
-          echo "api-url=${api_domain}" >> $GITHUB_OUTPUT
+          echo api-url=${api_domain} >> $GITHUB_OUTPUT
         else
-          echo "api-url=${api_domain}/${api_path}" >> $GITHUB_OUTPUT
+          echo api-url=${api_domain}/${api_path} >> $GITHUB_OUTPUT
         fi
       shell: bash
     - name: Deploy binary
@@ -92,3 +92,16 @@ runs:
         password: ${{ inputs.api-key }}
         contentType: multipart/form-data
         files: '{ "pages": "${{ github.workspace }}/pages.zip" }'
+    - name: Extract binary url
+      id: extract-binary-url
+      uses: SMJS-Productions/json-extract@main
+      with:
+        json: ${{ steps.deploy-binary.outputs.response }}
+        paths: '["url"]'
+    - name: Extract pages url
+      id: extract-pages-url
+      if: ${{ inputs.skip-pages == 'false' }}
+      uses: SMJS-Productions/json-extract@main
+      with:
+        json: ${{ steps.deploy-pages.outputs.response }}
+        paths: '["url"]'
