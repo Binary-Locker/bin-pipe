@@ -69,14 +69,13 @@ runs:
       shell: bash
     - name: Deploy binary
       id: deploy-binary
-      uses: fjogeleit/http-request-action@v1
+      uses: fjogeleit/http-request-action
       with:
         url: ${{ steps.normalize-api-url.outputs.api-url }}/api/bin/deploy/${{ steps.extract-info.outputs.mod_id }}/${{ steps.extract-info.outputs.mod_version }}
         method: POST
         username: ${{ inputs.api-username }}
         password: ${{ inputs.api-key }}
-        contentType: 'multipart/form-data'
-        ignoreSsl: true
+        contentType: multipart/form-data
         files: '{ "bin": "${{ inputs.binary-output }}" }'
     - name: Create pages zip
       id: create-pages-zip
@@ -89,12 +88,11 @@ runs:
     - name: Deploy pages
       id: deploy-pages
       if: ${{ inputs.skip-pages == 'false' }}
-      uses: fjogeleit/http-request-action@v1
+      uses: fjogeleit/http-request-action
       with:
         url: ${{ steps.normalize-api-url.outputs.api-url }}/api/pages/deploy/${{ steps.extract-info.outputs.mod_id }}/${{ steps.extract-info.outputs.mod_version }}
         method: POST
         username: ${{ inputs.api-username }}
         password: ${{ inputs.api-key }}
-        contentType: 'multipart/form-data'
-        ignoreSsl: true
+        contentType: multipart/form-data
         files: '{ "pages": "${{ github.workspace }}/pages.zip" }'
