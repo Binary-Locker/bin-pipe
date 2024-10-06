@@ -90,7 +90,7 @@ runs:
       if: ${{ inputs.skip-pages == 'false' }}
       uses: fjogeleit/http-request-action@main
       with:
-        url: ${{ steps.normalize-api-url.outputs.api-url }}/api/pages/deploy/${{ steps.extract-info.outputs.mod_id }}/${{ steps.extract-info.outputs.mod_version }}
+        url: ${{ steps.normalize-api-url.outputs.api-url }}/api/pages/deploy/${{ steps.extract-info.outputs.mod_id }}
         method: POST
         username: ${{ inputs.api-username }}
         password: ${{ inputs.api-key }}
