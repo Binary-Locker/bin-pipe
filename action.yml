@@ -45,7 +45,7 @@ runs:
       shell: bash
     - name: Extract mod info
       id: extract-info
-      uses: binary-locker/bin-pipe/json-extract@main
+      uses: SMJS-Productions/json-extract@main
       with:
         json: ${{ steps.get-mod-info.outputs.stdout }}
         paths: '["id", "version"]'
