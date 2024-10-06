@@ -49,7 +49,6 @@ runs:
       with:
         json: ${{ steps.get-mod-info.outputs.stdout }}
         paths: '["id", "version"]'
-        keys: '["mod_id", "mod_version"]'
     - name: Normalize API URL
       id: normalize-api-url
       run: |
@@ -68,12 +67,12 @@ runs:
       id: deploy-binary
       uses: fjogeleit/http-request-action@main
       with:
-        url: ${{ steps.normalize-api-url.outputs.api-url }}/api/bin/deploy/${{ steps.extract-info.outputs.values.mod_id }}/${{ steps.extract-info.outputs.values.mod_version }}
+        url: ${{ steps.normalize-api-url.outputs.api-url }}/api/bin/deploy/${{ steps.extract-info.outputs.id }}/${{ steps.extract-info.outputs.version }}
         method: POST
         username: ${{ inputs.api-username }}
         password: ${{ inputs.api-key }}
         contentType: multipart/form-data
-        files: '{ "bin": "${{ inputs.binary-output }}/${{ steps.extract-info.outputs.values.mod_id }}.geode" }'
+        files: '{ "bin": "${{ inputs.binary-output }}/${{ steps.extract-info.outputs.id }}.geode" }'
         ignoreStatusCodes: '409'
     - name: Create pages zip
       id: create-pages-zip
@@ -87,7 +86,7 @@ runs:
       if: ${{ inputs.skip-pages == 'false' }}
       uses: fjogeleit/http-request-action@main
       with:
-        url: ${{ steps.normalize-api-url.outputs.api-url }}/api/pages/deploy/${{ steps.extract-info.outputs.values.mod_id }}
+        url: ${{ steps.normalize-api-url.outputs.api-url }}/api/pages/deploy/${{ steps.extract-info.outputs.id }}
         method: POST
         username: ${{ inputs.api-username }}
         password: ${{ inputs.api-key }}
