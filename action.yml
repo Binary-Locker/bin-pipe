@@ -76,6 +76,7 @@ runs:
         username: ${{ inputs.api-username }}
         password: ${{ inputs.api-key }}
         contentType: multipart/form-data
+        data: '{}'
         files: '{ "bin": "${{ inputs.binary-output }}/${{ steps.extract-info.outputs.mod_id }}.geode" }'
     - name: Create pages zip
       id: create-pages-zip
@@ -95,4 +96,5 @@ runs:
         username: ${{ inputs.api-username }}
         password: ${{ inputs.api-key }}
         contentType: multipart/form-data
+        data: '{}'
         files: '{ "pages": "${{ github.workspace }}/pages.zip" }'
