@@ -41,7 +41,7 @@ runs:
     - uses: actions/checkout@v4
     - name: Get mod info
       id: get-mod-info
-      run: cat "${{ github.workspace }}/mod.json"
+      run: cat "${{ github.workspace }}/mod.json" >> $GITHUB_OUTPUT
       shell: bash
     - name: Extract mod info
       id: extract-info
