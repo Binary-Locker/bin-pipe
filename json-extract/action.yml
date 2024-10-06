@@ -13,6 +13,11 @@ inputs:
     required: false
     default: '[]'
 
+outputs:
+  values:
+    description: The extracted values
+    value: ${{ steps.extract-json.outputs }}
+
 runs:
   using: composite
   steps:
