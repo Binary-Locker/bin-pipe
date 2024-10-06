@@ -81,7 +81,7 @@ runs:
       id: create-pages-zip
       if: ${{ inputs.skip-pages == 'false' }}
       run: |
-        pages_directory = "${{ inputs.pages-directory }}"
+        pages_directory="${{ inputs.pages-directory }}"
         pages_directory="${pages_directory%/}"
         zip -r ${{ github.workspace }}/pages.zip ${pages_directory}/*
       shell: bash
