@@ -29,30 +29,27 @@ inputs:
 
 outputs:
   binary-url:
-    description: The URL for the binary artifact
-    value: ${{ steps.upload.outputs.url }}
+    description: The response of the binary deployment
+    value: ${{ steps.deploy-binary.response }}
   pages-url:
-    description: The URL for the pages directory
-    value: ${{ steps.upload.outputs.pages_url }}
+    description: The response of the page deployment
+    value: ${{ steps.deploy-pages.response }}
 
 runs:
   using: composite
   steps:
     - uses: actions/checkout@v4
+    - name: Get mod info
+      id: get-mod-info
+      run: cat "${{ github.workspace }}/mod.json"
+      shell: bash
     - name: Extract mod info
       id: extract-info
-      uses: actions/github-script@v7
+      uses: json-extract@main
       with:
-        script: |
-          try {
-            const { id, version } = require("${{ github.workspace }}/mod.json");
-
-            core.setOutput("mod_id", id);
-            core.setOutput("mod_version", version);
-          } catch(error) {
-            core.error("Error while reading or parsing the JSON");
-            core.setFailed(error);
-          }
+        json: ${{ steps.get-mod-info.outputs.stdout }}
+        paths: '["id", "version"]'
+        keys: '["mod_id", "mod_version"]'
     - name: Normalize API URL
       id: normalize-api-url
       run: |
