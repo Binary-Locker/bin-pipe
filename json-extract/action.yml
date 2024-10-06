@@ -26,20 +26,16 @@ runs:
       uses: actions/github-script@v7
       with:
         script: |
-          let goals = JSON.parse("${{ inputs.paths }}");
-          let keys = JSON.parse("${{ inputs.keys }}");
-
-          if (Array.isArray(goals)) {
-            goals = goals.map((goal) => goal.toString());
-          } else {
-            goals = [goals.toString()];
+          function normalizeValues(values) {
+            if (Array.isArray(values)) {
+              return values.map((value) => value.toString());
+            } else {
+              return [values.toString()];
+            }
           }
 
-          if (Array.isArray(keys)) {
-            keys = keys.map((key) => key.toString());
-          } else {
-            keys = [keys.toString()];
-          }
+          const goals = normalizeValues(JSON.parse("${{ inputs.paths }}"));
+          const keys = normalizeValues(JSON.parse("${{ inputs.keys }}"));
 
           try {
             const json = JSON.parse("${{ inputs.json }}");
