@@ -1,0 +1,50 @@
+name: Extract info
+description: Extracts all the information required for the other actions
+
+inputs:
+  api-domain:
+    description: The domain for the Binary Locker API (e.g. https://api.binarylocker.com)
+    required: true
+  api-path:
+    description: The path for the Binary Locker API without the internal path to the endpoint (e.g. v1)
+    required: true
+
+outputs:
+  api-url:
+    description: The URL for the Binary Locker API
+    value: ${{ steps.normalize-api-url.outputs.api-url }}
+  mod-id:
+    description: The ID of the mod
+    value: ${{ steps.extract-info.outputs.id }}
+  mod-version:
+    description: The version of the mod
+    value: ${{ steps.extract-info.outputs.version }}
+
+runs:
+  using: composite
+  steps:
+    - uses: actions/checkout@v4
+    - name: Get mod info
+      id: get-mod-info
+      run: echo content=$(cat "${{ github.workspace }}/mod.json") >> $GITHUB_OUTPUT
+      shell: bash
+    - name: Extract mod info
+      id: extract-info
+      uses: SMJS-Productions/json-extract@main
+      with:
+        json: ${{ steps.get-mod-info.outputs.content }}
+        paths: '["id", "version"]'
+    - name: Normalize API URL
+      id: normalize-api-url
+      run: |
+        api_domain="${{ inputs.api-domain }}"
+        api_domain="${api_domain%/}"
+        api_path="${{ inputs.api-path }}"
+        api_path="${api_path#/}"
+        api_path="${api_path%/}"
+        if [ -z "$api_path" ]; then
+          echo api-url=${api_domain} >> $GITHUB_OUTPUT
+        else
+          echo api-url=${api_domain}/${api_path} >> $GITHUB_OUTPUT
+        fi
+      shell: bash

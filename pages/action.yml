@@ -1,0 +1,58 @@
+name: Pipe Binary To Binary Locker
+description: Pipe the pages directory to the Binary Locker service
+
+inputs:
+  api-domain:
+    description: The domain for the Binary Locker API (e.g. https://api.binarylocker.com)
+    required: true
+  api-username:
+    description: The username for the Binary Locker API
+    required: true
+  api-key:
+    description: The API key for the Binary Locker API
+    required: true
+  api-path:
+    description: The path for the Binary Locker API without the internal path to the endpoint (e.g. v1)
+    required: false
+    default: ''
+  pages-directory:
+    description: The path for the pages directory
+    required: false
+    default: 'pages'
+
+outputs:
+  pages-url:
+    description: The response of the page deployment
+    value: ${{ steps.extract-pages-url.outputs.url }}
+
+runs:
+  using: composite
+  steps:
+    - name: Get info
+      id: get-info
+      uses: binary-locker/bin-pipe/info@main
+      with:
+        api-domain: ${{ inputs.api-domain }}
+        api-path: ${{ inputs.api-path }}
+    - name: Create pages zip
+      id: create-pages-zip
+      run: |
+        cd ${{ inputs.pages-directory }}
+        zip -r ${{ github.workspace }}/pages.zip *
+      shell: bash
+    - name: Deploy pages
+      id: deploy-pages
+      uses: fjogeleit/http-request-action@main
+      with:
+        url: ${{ steps.get-info.outputs.api-url }}/api/pages/deploy/${{ steps.get-info.outputs.mod-id }}
+        method: POST
+        username: ${{ inputs.api-username }}
+        password: ${{ inputs.api-key }}
+        contentType: multipart/form-data
+        files: '{ "pages": "${{ github.workspace }}/pages.zip" }'
+    - name: Extract pages url
+      id: extract-pages-url
+      uses: SMJS-Productions/json-extract@main
+      with:
+        json: ${{ steps.deploy-pages.outputs.response }}
+        paths: '["url"]'

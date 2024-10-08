@@ -1,0 +1,52 @@
+name: Pipe Binary To Binary Locker
+description: Pipe the binary artifact to the Binary Locker service
+
+inputs:
+  binary-output:
+    description: The path for the binary artifact
+    required: true
+  api-domain:
+    description: The domain for the Binary Locker API (e.g. https://api.binarylocker.com)
+    required: true
+  api-username:
+    description: The username for the Binary Locker API
+    required: true
+  api-key:
+    description: The API key for the Binary Locker API
+    required: true
+  api-path:
+    description: The path for the Binary Locker API without the internal path to the endpoint (e.g. v1)
+    required: false
+    default: ''
+
+outputs:
+  binary-url:
+    description: The response of the binary deployment
+    value: ${{ steps.extract-binary-url.outputs.url }}
+
+runs:
+  using: composite
+  steps:
+    - name: Get info
+      id: get-info
+      uses: binary-locker/bin-pipe/info@main
+      with:
+        api-domain: ${{ inputs.api-domain }}
+        api-path: ${{ inputs.api-path }}
+    - name: Deploy binary
+      id: deploy-binary
+      uses: fjogeleit/http-request-action@main
+      with:
+        url: ${{ steps.get-info.outputs.api-url }}/api/bin/deploy/${{ steps.get-info.outputs.mod-id }}/${{ steps.get-info.outputs.mod-version }}
+        method: POST
+        username: ${{ inputs.api-username }}
+        password: ${{ inputs.api-key }}
+        contentType: multipart/form-data
+        files: '{ "bin": "${{ inputs.binary-output }}/${{ steps.get-info.outputs.mod-id }}.geode" }'
+        ignoreStatusCodes: '409'
+    - name: Extract binary url
+      id: extract-binary-url
+      uses: SMJS-Productions/json-extract@main
+      with:
+        json: ${{ steps.deploy-binary.outputs.response }}
+        paths: '["url"]'
